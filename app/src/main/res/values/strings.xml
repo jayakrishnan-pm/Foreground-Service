@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Foreground Service</string>
+    <string name="msg_notification_service_desc">This is a forground service. This is helpful to do important tasks that must run even after app exits.</string>
+    <string name="title_notification_service_title">Sample foregroud service.</string>
+    <string name="label_btn_sticky_notification_open_app">Open Application</string>
+</resources>
