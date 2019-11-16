@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">Foreground Service</string>
-    <string name="msg_notification_service_desc">This is a forground service. This is helpful to do important tasks that must run even after app exits.</string>
-    <string name="title_notification_service_title">Sample foregroud service.</string>
-    <string name="label_btn_sticky_notification_open_app">Open Application</string>
+    <string name="app_name">Devdeeds - Foreground Service</string>
+    <string name="msg_notification_service_desc">This is a sample foreground service. This is the best place to execute a non kill-able long tasks.</string>
+    <string name="title_foreground_service_notification">Devdeeds foreground service</string>
+    <string name="lbl_btn_sticky_notification_open_app">Open Application</string>
+    <string name="txt_home">Hello World</string>
+    <string name="lbl_home">Received Text</string>
+    <string name="title_gen_notification">New Alert</string>
+    <string name="description_gen_notification">Click here to open in App</string>
 </resources>

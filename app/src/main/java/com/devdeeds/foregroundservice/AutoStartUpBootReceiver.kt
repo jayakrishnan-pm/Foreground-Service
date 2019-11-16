@@ -1,13 +1,9 @@
-package countdown.event.utility.app.alarms
+package com.devdeeds.foregroundservice
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-
-
-import countdown.event.utility.app.services.FService
-
 
 
 /** @author Jayakrishnan P.M

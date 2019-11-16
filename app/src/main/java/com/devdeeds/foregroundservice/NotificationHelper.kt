@@ -14,14 +14,16 @@ import androidx.core.app.NotificationCompat
 import java.util.*
 
 
-class NotificationHelper {
+/** @author Jayakrishnan P.M
+ * Created by Devdeeds.com on 21/3/18.
+ */
 
-    companion object {
 
-        public const val CHANNEL_ID = "com.devdeeds.foregroundservice.notification_channel"
-        public const val CHANNEL_NAME = "Task Reminder"
+object NotificationHelper {
 
-    }
+    private const val CHANNEL_ID = "com.devdeeds.foregroundservice.notification_channel"
+    private const val CHANNEL_NAME = "Task Reminder"
+
 
     private lateinit var mNotification: Notification
     private fun createChannel(context: Context?) {
@@ -90,7 +92,10 @@ class NotificationHelper {
             if (!isScreenOn) {
 
                 wakeLock =
-                    powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "EC:Event_Reminder")
+                    powerManager.newWakeLock(
+                        PowerManager.PARTIAL_WAKE_LOCK,
+                        "EC:Event_Reminder"
+                    )
                 wakeLock.acquire(10000)
 
             }
@@ -109,8 +114,6 @@ class NotificationHelper {
                         .bigText(description)
                 )
                 .setContentText(description).build()
-
-
 
 
             notificationManager.notify(id, mNotification)
@@ -134,4 +137,5 @@ class NotificationHelper {
         val r = Random()
         return r.nextInt(max - min + 1) + min
     }
+
 }

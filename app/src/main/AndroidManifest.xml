@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-        <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -22,14 +22,13 @@
         </activity>
 
         <service
-            android:name="countdown.event.utility.app.services.FService"
+            android:name=".FService"
             android:enabled="true"
             android:exported="false" />
 
 
-
         <receiver
-            android:name="countdown.event.utility.app.alarms.AutoStartUpBootReceiver"
+            android:name=".AutoStartUpBootReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>

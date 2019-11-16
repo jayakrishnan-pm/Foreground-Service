@@ -2,9 +2,10 @@ package com.devdeeds.foregroundservice
 
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import countdown.event.utility.app.services.FService
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,12 @@ class MainActivity : AppCompatActivity() {
             } else {
                 startService(Intent(applicationContext, FService::class.java))
             }
+        }
+
+
+        //Show data sent from service to view on click
+        if (intent != null && intent.getStringExtra(FService.KEY_DATA) != null) {
+            findViewById<TextView>(R.id.txtValueView).text = intent.getStringExtra(FService.KEY_DATA)
         }
     }
 }

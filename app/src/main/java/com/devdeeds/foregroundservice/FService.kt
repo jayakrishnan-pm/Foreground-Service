@@ -1,4 +1,4 @@
-package countdown.event.utility.app.services
+package com.devdeeds.foregroundservice
 
 import android.app.*
 import android.content.Context
@@ -9,19 +9,17 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.devdeeds.foregroundservice.MainActivity
-import com.devdeeds.foregroundservice.NotificationHelper
-import com.devdeeds.foregroundservice.R
 
 
+/** @author Jayakrishnan P.M
+ * Created by Devdeeds.com on 21/3/18.
+ */
 
 class FService : Service() {
 
     private val mHandler: Handler? = Handler()
-    private var mNotificationHelper: NotificationHelper? = null
+
     private lateinit var mRunnable: Runnable
-
-
 
 
     override fun onCreate() {
@@ -29,11 +27,9 @@ class FService : Service() {
         startForegroundService()
     }
 
-
     override fun onBind(p0: Intent?): IBinder? {
         return null;
     }
-
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
@@ -44,27 +40,22 @@ class FService : Service() {
             when (intent.action) {
 
                 ACTION_STOP_FOREGROUND_SERVICE -> {
-                    stopIt()
+                    stopService()
                 }
 
-                ACTION_OPEN_APP -> openAppHomePage()
+                ACTION_OPEN_APP -> openAppHomePage(intent.getStringExtra(KEY_DATA))
             }
         }
         return START_STICKY;
     }
 
 
-    private fun openAppHomePage() {
+    private fun openAppHomePage(value: String) {
 
         val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.putExtra(KEY_DATA, value)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
-
-    }
-
-
-    private fun stopIt() {
-        stopForegroundService()
 
     }
 
@@ -72,8 +63,10 @@ class FService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-            val chan = NotificationChannel(CHANNEL_ID,
-                    CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
+            val chan = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT
+            )
 
             chan.lightColor = Color.BLUE
             chan.lockscreenVisibility = NotificationCompat.VISIBILITY_PRIVATE
@@ -81,18 +74,13 @@ class FService : Service() {
             service.createNotificationChannel(chan)
 
         }
-
     }
-
 
     /* Used to build and start foreground service. */
     private fun startForegroundService() {
 
+        //Create Notification channel for all the notifications sent from this app.
         createNotificationChannel()
-
-
-        Log.d(TAG, "Start foreground service.")
-        // Create notification default intent.
 
         // Start foreground service.
         startFService()
@@ -106,8 +94,8 @@ class FService : Service() {
 
         // Schedule the task to repeat after 1 second
         mHandler?.postDelayed(
-                mRunnable, // Runnable
-                ONE_MIN_MILLI // Delay in milliseconds
+            mRunnable, // Runnable
+            ONE_MIN_MILLI // Delay in milliseconds
         )
 
     }
@@ -115,7 +103,10 @@ class FService : Service() {
     private fun startFService() {
 
         val description = getString(R.string.msg_notification_service_desc)
-        val title = String.format(getString(R.string.title_notification_service_title), getString(R.string.app_name))
+        val title = String.format(
+            getString(R.string.title_foreground_service_notification),
+            getString(R.string.app_name)
+        )
 
         startForeground(SERVICE_ID, getStickyNotification(title, description))
         IS_RUNNING = true
@@ -125,7 +116,6 @@ class FService : Service() {
     private fun getStickyNotification(title: String, message: String): Notification? {
 
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, Intent(), 0)
-
 
         // Create notification builder.
         val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
@@ -149,8 +139,13 @@ class FService : Service() {
         // Add Open App button in notification.
         val openAppIntent = Intent(applicationContext, FService::class.java)
         openAppIntent.action = ACTION_OPEN_APP
+        openAppIntent.putExtra(KEY_DATA, "" + System.currentTimeMillis())
         val pendingPlayIntent = PendingIntent.getService(applicationContext, 0, openAppIntent, 0)
-        val openAppAction = NotificationCompat.Action(android.R.drawable.ic_menu_view, getString(R.string.label_btn_sticky_notification_open_app), pendingPlayIntent)
+        val openAppAction = NotificationCompat.Action(
+            android.R.drawable.ic_menu_view,
+            getString(R.string.lbl_btn_sticky_notification_open_app),
+            pendingPlayIntent
+        )
         builder.addAction(openAppAction)
 
 
@@ -160,27 +155,17 @@ class FService : Service() {
     }
 
 
-
     private fun notifyNextEvent() {
 
-
-         if ((System.currentTimeMillis() - lastNotifiedTime) >= notificationInterval) {
-
-
-             mNotificationHelper?.onHandleEvent("New Alert", "Click here to open in App", applicationContext)
-
-         }
-
-
+        NotificationHelper.onHandleEvent(
+            getString(R.string.title_gen_notification),
+            getString(R.string.description_gen_notification),
+            applicationContext
+        )
     }
 
 
-
-
-
-
-    private fun stopForegroundService() {
-        Log.d(TAG, "Stop foreground service.")
+    private fun stopService() {
         // Stop foreground service and remove the notification.
         stopForeground(true)
         // Stop the foreground service.
@@ -192,8 +177,6 @@ class FService : Service() {
 
     override fun onDestroy() {
         IS_RUNNING = false
-
-
         mHandler?.removeCallbacks(null)
     }
 
@@ -201,14 +184,11 @@ class FService : Service() {
 
         const val TAG = "FOREGROUND_SERVICE"
 
-        var lastNotifiedTime = 0
-        var notificationInterval = 10000 //10secs
-
 
         const val ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE"
 
         const val ACTION_OPEN_APP = "ACTION_OPEN_APP"
-
+        const val KEY_DATA = "KEY_DATA"
 
         private const val CHANNEL_ID: String = "1001"
         private const val CHANNEL_NAME: String = "Event Tracker"
